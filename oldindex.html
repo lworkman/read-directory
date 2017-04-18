@@ -1,0 +1,24 @@
+<head>
+</head>
+<body>
+
+    <div class='code-panel'>
+        <div class='code-selector'>
+            <ul class='code-selector-list'>
+                <li class='code-selector-list-item'><button value='javascript' onClick='changeCodeType(this)'>Javascript</button></li>
+                <li class='code-selector-list-item'><button value='angular' onClick='changeCodeType(this)'>Angular.js</button></li>
+                <li class='code-selector-list-item'><button value='jquery' onClick='changeCodeType(this)'>jQuery</button></li>
+                </ul>
+            </div>
+        <div class='left-panel'>
+            <ul id='left-panel-list'>
+                </ul>
+        </div>
+        <div id='right-panel'>
+            <pre><code id='code'></code></pre>
+        </div>
+    </div>
+
+    <script src="./reader.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="./style.css">
+</body>

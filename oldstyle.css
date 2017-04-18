@@ -1,0 +1,40 @@
+.left-panel {
+    display:inline-block;
+    width: 30%;
+    height:100%;
+    vertical-align:top;
+    border-right:2px solid black;
+}
+#right-panel {
+    display:inline-block;
+    overflow-x: scroll;
+    overflow-y: scroll;
+    width:68%;
+    height:100%;
+}
+.code-panel {
+    position:fixed;
+    right:0px;
+    width: 30%;
+    min-width: 500px;
+    height:100%;
+    border: 2px solid black;
+    border-right: 0px;
+}
+.code-selector {
+    width: 100%;
+    border-bottom: 2px solid black;
+}
+.code-selector-list-item {
+    display:inline-block;
+}
+button {
+    display: block;
+}
+ul {
+    list-style: none;
+    padding-left:0px;
+}
+body {
+    margin: 0px;
+}
