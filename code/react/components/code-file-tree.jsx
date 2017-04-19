@@ -6,6 +6,20 @@ export default class CodeSelector extends React.Component{
         super(props);
         this.links = props.documentLinks;
         this.clickFunction = props.clickEvent;
+
+        console.log(this.links);
+
+        //this.recursiveObjectWriter(this.links);
+    }
+
+    recursiveObjectWriter(object){
+        const badKeys = ['paths','parent','url'];
+        Object.keys(object).forEach(function(key){
+            if (badKeys.indexOf(key) == -1){
+                console.log(object[key]);
+                this.recursiveObjectWriter(object[key]);
+            }
+        },this);
     }
 
     clickClick(URL){
@@ -13,15 +27,15 @@ export default class CodeSelector extends React.Component{
     }
 
     render() {
-        let elements = [];
+        // let elements = [];
 
-        const clickClick = this.clickClick;
-        const self = this;
+        // const clickClick = this.clickClick;
+        // const self = this;
 
-        this.links.forEach(function(element){
-            elements.push(<li key={element}><button onClick={clickClick.bind(self,element)} href={element}>{element}</button></li>);
-        })
+        // this.links.forEach(function(element){
+        //     elements.push(<li key={element}><button onClick={clickClick.bind(self,element)} href={element}>{element}</button></li>);
+        // })
 
-        return (<ul>{elements}</ul>);
+        return (<p>heyy</p>);
     }
 }

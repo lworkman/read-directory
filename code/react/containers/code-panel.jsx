@@ -7,11 +7,13 @@ export default class CodePanel extends React.Component{
         super();
         this.state = {
             'code': 'react',
-            'documentLinks': ['code/']
+            'directoryList': {},
+            'loaded': false
         }
-        this.directoryList = {};
+        this.retrieveDirectoryFromURL('code/');
         this.changeCodeState = this.changeCodeState.bind(this);
-        this.retrieveDirectoryFromURL = this.retrieveDirectoryFromURL.bind(this);
+        this.sentRequests = 0;
+        this.loadedRequests = 0;
     }
 
     changeCodeState(value){
@@ -23,6 +25,7 @@ export default class CodePanel extends React.Component{
         xhrDirectory.onreadystatechange = this.readDirectoryResponse.bind(this,xhrDirectory,URL,parent);
         xhrDirectory.open('GET',URL,true);
         xhrDirectory.send();
+        this.sentRequests ++;
     }
     
     readDirectoryResponse(xhr,URL,parent){
@@ -38,6 +41,7 @@ export default class CodePanel extends React.Component{
                     directoryHierarchy.push(listOfAnchors[key].innerHTML.replace(/\s/g,''));
                 }
                 else if (listOfAnchors[key].innerHTML != " Parent Directory"){
+                    this.loadedRequests ++;
                     this.retrieveDirectoryFromURL(URL+listOfAnchors[key].innerHTML.replace(/\s/g,''),URL);
                 }
             },this)
@@ -46,10 +50,13 @@ export default class CodePanel extends React.Component{
                 'url': URL,
                 'paths': directoryHierarchy
             };
+
+            let tempDirectoryList = Object.assign({},this.state.directoryList);
+
             if (typeof parent != 'undefined'){
                 let parentArray = parent.split('/');
                 let URLArray = URL.split('/');
-                let properParent = this.directoryList;
+                let properParent = tempDirectoryList;
                 let displayParent = '';
 
                 parentArray.forEach(function(element){
@@ -62,17 +69,23 @@ export default class CodePanel extends React.Component{
             }
             else {
                 item['parent'] = undefined;
-                this.directoryList[URL] = item;
+                tempDirectoryList[URL] = item;
             }
-            console.log(this.directoryList)
+
+            if (this.loadedRequests == this.sentRequests && this.sentRequests != 0){
+                this.setState({'loaded': true})
+            }
+
+            this.setState({'directoryList': tempDirectoryList});
+            console.log(tempDirectoryList);
         }
     }
 
     render() {
 
-        return (<div className='code-panel'>
-                <CodeWindow type='selector' clickEvent={this.changeCodeState} />
-                <CodeWindow type='file-tree' destinationLinks={this.state.documentLinks} clickEvent={this.retrieveDirectoryFromURL} />
-                </div>)
+            return (<div className='code-panel'>
+                    <CodeWindow type='selector' clickEvent={this.changeCodeState} />
+                    <CodeWindow type='file-tree' destinationLinks={this.state.directoryList} clickEvent={this.retrieveDirectoryFromURL} />
+                    </div>)
     }
 }
