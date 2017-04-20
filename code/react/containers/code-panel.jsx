@@ -6,18 +6,22 @@ export default class CodePanel extends React.Component{
     constructor(){
         super();
         this.state = {
-            'code': 'react',
+            'code': 'all',
             'directoryList': {},
-            'loaded': false
+            'loaded': false,
+            'codeToDisplay': '',
+            'fileTypes': []
         }
         this.retrieveDirectoryFromURL('code/');
         this.changeCodeState = this.changeCodeState.bind(this);
+        this.retrieveFileFromURL = this.retrieveFileFromURL.bind(this);
+        this.setFileTypes = this.setFileTypes.bind(this);
         this.sentRequests = 0;
         this.loadedRequests = 0;
     }
 
     changeCodeState(value){
-        this.setState({'code':value});
+        this.setState({'code': value});
     }
 
     retrieveDirectoryFromURL(URL,parent){
@@ -64,7 +68,7 @@ export default class CodePanel extends React.Component{
                         properParent = properParent[element+'/'];
                     }
                 })
-
+                item['parent'] = parent;
                 properParent[URLArray[URLArray.length-2]+'/'] = item;
             }
             else {
@@ -77,15 +81,57 @@ export default class CodePanel extends React.Component{
             }
 
             this.setState({'directoryList': tempDirectoryList});
-            console.log(tempDirectoryList);
+            this.setFileTypes();
+        }
+    }
+
+    setFileTypes(){
+
+        const badKeys = ['paths','url','parent'];
+
+        let fileTypes = ['all'];
+
+        Object.keys(this.state.directoryList['code/']).forEach(function(key){
+            if (badKeys.indexOf(key) == -1){
+                fileTypes.push(key.split('/')[0]);
+            }
+        });
+
+        this.setState({'fileTypes': fileTypes});
+    }
+
+    retrieveFileFromURL(URL){
+        const xhrFile = new XMLHttpRequest();
+        xhrFile.onreadystatechange = this.readFileResponse.bind(this,xhrFile);
+        xhrFile.open('GET',URL,true);
+        xhrFile.send();
+    }
+
+    readFileResponse(xhr){
+        if (xhr.readyState == 4 && xhr.status == 200){
+            this.setState({'codeToDisplay': xhr.response});
         }
     }
 
     render() {
+            if (Object.keys(this.state.directoryList).length > 0){
 
-            return (<div className='code-panel'>
-                    <CodeWindow type='selector' clickEvent={this.changeCodeState} />
-                    <CodeWindow type='file-tree' destinationLinks={this.state.directoryList} clickEvent={this.retrieveDirectoryFromURL} />
-                    </div>)
+                let directoryToDisplay = this.state.directoryList['code/'];
+
+                if (this.state.code != 'all'){
+
+                    directoryToDisplay = directoryToDisplay[this.state.code + '/'];
+
+                }
+
+                return (<div className='code-panel'>
+                        <CodeWindow type='selector' clickEvent={this.changeCodeState} fileTypes={this.state.fileTypes}/>
+                        <CodeWindow type='file-tree' destinationLinks={directoryToDisplay} clickEvent={this.retrieveFileFromURL} />
+                        <CodeWindow type='code-display' codeToDisplay={this.state.codeToDisplay} />
+                        </div>)
+            }
+            else {
+                return (<p></p>)
+            }
     }
 }

@@ -1,3 +1,8 @@
+@mixin list-item(){
+    display:block;
+    border: 0px;
+    background-color:transparent;
+}
 .file-tree-panel {
     display:inline-block;
     width: 30%;
@@ -5,14 +10,14 @@
     vertical-align:top;
     border-right:2px solid black;
 }
-#right-panel {
+.right-panel {
     display:inline-block;
     overflow-x: scroll;
     overflow-y: scroll;
     width:68%;
     height:100%;
 }
-.code-panel {
+.code-panel {  
     position:fixed;
     right:0px;
     width: 30%;
@@ -25,15 +30,25 @@
     width: 100%;
     border-bottom: 2px solid black;
 }
-.code-selector-list-item {
-    display:inline-block;
+.list {
+    padding-left: 10px;
+    list-style: none;
+}
+.code-folder-closed,.code-folder-open {
+    @include list-item();
+}
+.code-folder-open::before {
+    content:'\25b7';
+}
+.code-folder-closed::before {
+    content:'\25bc';
+}
+.code-select-item {
+    @include list-item();
+    display: inline-block;
 }
 button {
     display: block;
-}
-ul {
-    list-style: none;
-    padding-left:0px;
 }
 body {
     margin: 0px;

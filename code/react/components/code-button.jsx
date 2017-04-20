@@ -1,19 +1,16 @@
 import React from 'react';
 
-export default class CodeButton extends React.Component{
+function CodeButton(props){
 
-    constructor(props){
-        super(props);
-        this.clickFunction = props.clickFunction;
-        this.clickFunctionHandler = this.clickFunctionHandler.bind(this);
+    function clickFunctionHandler(){
+        props.clickFunction(props.value);
     }
 
-    clickFunctionHandler(){
-        this.clickFunction(this.props.value);
-    }
 
-    render() {
+    let name = props.value.split('/');
 
-        return (<button onClick={this.clickFunctionHandler}>{this.props.value}</button>);
-    }
+    name = name[name.length-1];
+    return (<button className='code-select-item' onClick={clickFunctionHandler}>{name}</button>);
 }
+
+export default CodeButton;
